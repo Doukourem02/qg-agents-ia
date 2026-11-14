@@ -42,7 +42,7 @@ Tu reconstruis, une fois par semaine, **ce que Kuroro sait du projet et des pers
   - `missions` : la barre de mission et Telegram, Kuroro qui confie, et **qui fait vraiment les missions, et quand** (d'après `LISENT_LES_MISSIONS` et `src/data/missions.ts`) ;
   - `telegram` : à quoi sert Telegram (accords et alertes seulement) ;
   - `phases` : une ligne par groupe de phases (0 à 6), avec l'état d'après la check-list ;
-  - `pas_fait_expres` : ce qui n'est volontairement pas fait (aujourd'hui : on ne poste pas sur LinkedIn, la rédaction de L est en pause ; aucun agent ne commente à la place du patron). Mets-le à jour seulement si la check-list ou Notion le disent.
+  - `pas_fait_expres` : ce qui n'est volontairement pas fait (aujourd'hui : aucun agent ne publie ni ne commente à la place du patron). Mets-le à jour seulement si la check-list ou Notion le disent.
 - `personnages` : **les 16, une fois chacun**, avec `id` (celui d'`agents.json`), `nom`, `statut` et `role` obligatoires ; `clin`, `routine`, `fait`, `parler`, `interdit`, `ou` facultatifs. Aucun autre champ.
   - une phrase courte par champ, heures à l'heure d'Abidjan (« 8 h », « lundi-vendredi 7 h 30 ») ;
   - `statut` : « Réel depuis le … », « Prévu », « Plus tard (simulé) » — d'après `AGENTS_REELS` d'abord, puis Notion ;

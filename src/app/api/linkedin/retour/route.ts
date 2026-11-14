@@ -1,3 +1,4 @@
+import { pageSeulement } from '@/server/auth';
 import { connection } from 'next/server';
 import { getKV } from '@/server/kv';
 import { echangerCode, lireProfil } from '@/server/linkedin/api';
@@ -13,6 +14,8 @@ const jjmmaaaa = (ms: number) => new Date(ms).toLocaleDateString('fr-FR', { time
 
 // LinkedIn me renvoie ici avec un code (ou une erreur) ; le jeton n'apparaît jamais dans la page.
 export async function GET(req: Request) {
+  const refus = pageSeulement(req);
+  if (refus) return refus;
   await connection();
   const clientId = process.env.LINKEDIN_CLIENT_ID, secret = process.env.LINKEDIN_CLIENT_SECRET;
   if (!clientId || !secret) return page('La connexion n\'a pas abouti : LinkedIn n\'est pas configuré côté QG.', 503);

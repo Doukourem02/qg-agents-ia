@@ -155,11 +155,13 @@ Les règles qui font tenir le QG :
   ne change rien.
 - **Rien d'inventé** : chaque proposition cite ses sources (un commit, un fichier), et le serveur le vérifie.
 - **Les clés restent secrètes** : dans les variables d'environnement, jamais dans le code, les journaux ou les messages.
+- **Chacun à sa porte** : les entrées de la page refusent les clés des agents, et chaque agent peut avoir sa propre clé
+  (`QG_CLE_AGENT_<NOM>`) : un agent piégé ne lit pas les bureaux des autres et ne parle pas à leur place.
 
 ## Vérifier
 
 ```bash
-pnpm test        # 2 000+ tests (Vitest)
+pnpm test        # 2 000+ tests (Vitest) ; ils tournent aussi sur GitHub à chaque push
 pnpm typecheck   # lance d'abord « pnpm dev » une fois : Next.js génère ses types
 pnpm lint
 ```

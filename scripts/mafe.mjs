@@ -20,7 +20,7 @@ export function construireRequete(commande, corps, env = {}) {
   const lecture = LECTURES.includes(commande);
   if (!lecture && !ECRITURES.includes(commande)) throw new Error(`commande inconnue : ${commande}`);
   const base = (env.QG_URL || DEFAUT).replace(/\/$/, '');
-  const headers = { ...(env.QG_BYPASS ? { 'x-vercel-protection-bypass': env.QG_BYPASS } : {}) };
+  const headers = { ...(env.QG_BYPASS ? { 'x-vercel-protection-bypass': env.QG_BYPASS } : {}), ...(env.QG_CLE_AGENT ? { 'x-qg-agent-cle': env.QG_CLE_AGENT } : {}) };
   const init = { method: lecture ? 'GET' : 'POST', headers, redirect: 'manual' };
   if (!lecture) { headers['content-type'] = 'application/json'; init.body = JSON.stringify(corps ?? {}); }
   return { url: `${base}/api/agents/mafe/${commande}`, init };

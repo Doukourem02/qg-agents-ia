@@ -70,6 +70,14 @@ export const FILE_DU_MAC = 'kuroro:demandes';
 export const MARQUE_ISAAC = 'mission-isaac';
 
 /** Une mission écrite dans la page : Kuroro la confie au bon agent (ou à l'agent choisi depuis sa fiche). */
+/** Au plus 20 missions déposées par minute (la barre, une fiche d'agent) : au-delà, 429. */
+export const MISSIONS_PAR_MINUTE = 20;
+export async function placeDeMission(kv: KV, now = Date.now()): Promise<boolean> {
+  const minute = Math.floor(now / 60_000);
+  for (let n = 0; n < MISSIONS_PAR_MINUTE; n++) if (await kv.setnx(`qg:missions:debit:${minute}:${n}`, '1', 90)) return true;
+  return false;
+}
+
 export async function deposerMission(kv: KV, corps: Record<string, unknown>, now = Date.now()) {
   const t = texte(corps.texte, 'texte', 300)!;
   const choisi = corps.agent ? agentValide(corps.agent) : null;

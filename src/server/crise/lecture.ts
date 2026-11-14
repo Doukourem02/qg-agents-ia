@@ -5,7 +5,7 @@ import { lireConstats } from '../lea/relecture';
 import { gravesOuverts, nomCourt } from '../lea/etiquette';
 import { lireTour } from '../zoro/tour';
 import { nettoyer } from '../zoro/importance';
-import { ROUTINES, vuesQG } from '../vues';
+import { ROUTINES, routineEnPause, vuesQG } from '../vues';
 import { PANNE_INCIDENT, type GenreSujet, type Sujet } from '@/data/crise';
 
 // Les vraies alertes ouvertes, lues dans Upstash là où les agents les rangent : jamais une alerte inventée.
@@ -58,7 +58,7 @@ async function faillesCritiques(kv: KV): Promise<Sujet[]> {
 /** Les passages prévus aujourd'hui et ratés, comme le bandeau des Tâches (hors routines en pause et relances). */
 async function passagesRates(kv: KV, now: number): Promise<Sujet[]> {
   const v = await vuesQG(kv, now);
-  const enPause = new Set(ROUTINES.filter(r => r.pause !== undefined && r.pause <= now).map(r => r.id));
+  const enPause = new Set(ROUTINES.filter(r => routineEnPause(r, now)).map(r => r.id));
   return v.calendrier.creneaux
     .filter(c => c.jour === v.calendrier.aujourdhui && c.etat === 'rate' && !c.conditionnel && !enPause.has(c.routine))
     .map(c => ({

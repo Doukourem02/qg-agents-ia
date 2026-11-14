@@ -11,7 +11,7 @@ const { GET } = await import('./route');
 
 describe('GET /api/qg/vues', () => {
   it('attend connection(), répond sans cache avec les trois vues, l’état des agents et l’heure de lecture', async () => {
-    const r = await GET();
+    const r = await GET(new Request('https://qg.test/api/qg/vues'));
     expect(connection).toHaveBeenCalled();
     expect(r.status).toBe(200);
     expect(r.headers.get('cache-control')).toBe('no-store');

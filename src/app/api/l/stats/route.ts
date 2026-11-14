@@ -1,5 +1,5 @@
 import { getKV } from '@/server/kv';
-import { reponseErreur } from '@/server/auth';
+import { reponseErreur, pageSeulement } from '@/server/auth';
 import { Refus } from '@/server/qg';
 import { envoyerTelegram } from '@/server/telegram';
 import { deposerStats, estTableur, lireTableur } from '@/server/l/stats';
@@ -9,6 +9,8 @@ import { deposerStats, estTableur, lireTableur } from '@/server/l/stats';
 const MAX_OCTETS = 4 * 1024 * 1024;
 
 export async function POST(req: Request) {
+  const refus = pageSeulement(req);
+  if (refus) return refus;
   try {
     let form: FormData;
     try { form = await req.formData(); } catch { throw new Refus('formulaire attendu (champ « fichier »)'); }

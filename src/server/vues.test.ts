@@ -527,6 +527,17 @@ describe('pause de L · rédaction', () => {
     expect(c?.etat).toBe('pause');
     expect(PAUSE_L_REDACTION).toBeLessThan(jeudi);
   });
+  it('après la reprise du 14 novembre, la rédaction repasse normalement : ni « en pause », ni cachée', async () => {
+    const { vuesQG, REPRISE_L_REDACTION, routineEnPause, ROUTINES } = await import('./vues');
+    const { memoire } = await import('./memoire');
+    const r = ROUTINES.find(x => x.id === 'l-redaction')!;
+    expect(routineEnPause(r, Date.UTC(2026, 10, 12, 6))).toBe(true);
+    expect(routineEnPause(r, REPRISE_L_REDACTION)).toBe(false);
+    const mardi = Date.UTC(2026, 10, 17, 9, 0);
+    const v = await vuesQG(memoire(), mardi);
+    const c = v.calendrier.creneaux.find((x: { routine: string; jour: number }) => x.routine === 'l-redaction' && x.jour === 1);
+    expect(c?.etat).not.toBe('pause');
+  });
 });
 
 describe('bandeau rouge', () => {

@@ -133,6 +133,9 @@ export function ligneBoite(b: Boite): string {
   return `La boîte tourne : ${pluriel(b.agents.length, 'agent')} en service, ${parts.length ? parts.join(', ') : 'tout est calme'}.`;
 }
 
+const PAS_COMPRIS = 'Pardon patron, je n’ai pas compris : mon IA ne répond pas en ce moment.';
+const COMMENT_DEMANDER = 'Redis-le-moi en une commande simple (« vérifie mes sites », « mets Ye en pause », « reprends L »), ou réessaie dans un instant.';
+
 /** Une réponse naturelle à une phrase sans ordre, avec les vrais faits : jamais de mission ni de boutons. */
 export function repondreDiscussion(texte: string, { now = Date.now(), boite }: { now?: number; boite?: Boite | null } = {}): string[] {
   const t = norme(texte);
@@ -141,7 +144,11 @@ export function repondreDiscussion(texte: string, { now = Date.now(), boite }: {
   const accueil = VA_BIEN.test(t) ? 'Content de savoir que tu vas bien.'
     : NOUVELLES.test(t) ? 'Ça roule de mon côté, merci de demander.'
     : !salut && QUESTION.test(t) ? 'Je n’ai pas de réponse précise à ça sans mon IA.'
-    : 'Content de te lire.';
+    : salut ? 'Content de te lire.'
+    // ni salut, ni nouvelles, ni question : c'est sans doute une demande, et sans mon IA je ne la comprends pas.
+    // Je le dis, au lieu de répondre à côté (« Bah contacte-le, c'est une urgence » ne doit jamais recevoir « Content de te lire »).
+    : PAS_COMPRIS;
+  if (accueil === PAS_COMPRIS) return [PAS_COMPRIS, COMMENT_DEMANDER];
   const debut = salut ? `${estJourPourSalut(now) ? 'Bonjour' : 'Bonsoir'} patron. ${accueil}` : accueil;
   return [debut, ...(boite ? [ligneBoite(boite)] : []), QUE_FAIRE];
 }

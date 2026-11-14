@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { ECHEC, confirmerChoix, decider, estOrdre, petitMot, quandLigne, type Boite } from './kuroro';
+import { ECHEC, confirmerChoix, decider, estOrdre, petitMot, quandLigne, type Boite, repondreDiscussion } from './kuroro';
 import { agentById, poleById } from './routing';
 import { AGENTS_REELS } from '@/data/reels';
 
@@ -156,5 +156,11 @@ describe('la barre de mission', () => {
   it('Kuroro salue à son bureau pendant la conversation, sans casser les comptes rendus', () => {
     expect(conv).toContain("e.saluer('kuroro')");
     expect(conv).toContain("e.salue('kuroro')");
+  });
+  it('sans IA, une demande que les règles ne comprennent pas : Kuroro le dit, il ne répond jamais à côté', () => {
+    const l = repondreDiscussion('Bah contact le c\'est une urgence', { now: Date.UTC(2026, 10, 14, 21, 42), boite: null });
+    expect(l[0]).toMatch(/je n’ai pas compris : mon IA ne répond pas/);
+    expect(l.join(' ')).not.toContain('Content de te lire');
+    expect(l[1]).toContain('reprends L');
   });
 });

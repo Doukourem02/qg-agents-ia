@@ -159,6 +159,8 @@ The rules that hold the QG together:
   nothing.
 - **Nothing made up**: every proposal cites its sources (a commit, a file), and the server checks them.
 - **Keys stay secret**: in environment variables, never in the code, logs or messages.
+- **Everyone at their own door**: the page's routes refuse agent credentials, and each agent can have its own key
+  (`QG_CLE_AGENT_<NAME>`): a hijacked agent cannot read the others' offices or speak in their name.
 
 ## Checks
 

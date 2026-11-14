@@ -11,7 +11,7 @@ const DEFAUT = 'https://mon-qg.vercel.app';
 export function construireRequete(commande, corps, env = {}) {
   if (commande !== 'envoyer') throw new Error(`commande inconnue : ${commande}`);
   const base = (env.QG_URL || DEFAUT).replace(/\/$/, '');
-  const headers = { 'content-type': 'application/json', ...(env.QG_BYPASS ? { 'x-vercel-protection-bypass': env.QG_BYPASS } : {}) };
+  const headers = { 'content-type': 'application/json', ...(env.QG_BYPASS ? { 'x-vercel-protection-bypass': env.QG_BYPASS } : {}), ...(env.QG_CLE_AGENT ? { 'x-qg-agent-cle': env.QG_CLE_AGENT } : {}) };
   return { url: `${base}/api/agents/connaissances`, init: { method: 'POST', headers, redirect: 'manual', body: JSON.stringify(corps ?? {}) } };
 }
 

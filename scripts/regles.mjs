@@ -10,7 +10,7 @@ const DEFAUT = 'https://mon-qg.vercel.app';
 
 export function construireRequete(env = {}) {
   const base = (env.QG_URL || DEFAUT).replace(/\/$/, '');
-  const headers = { ...(env.QG_BYPASS ? { 'x-vercel-protection-bypass': env.QG_BYPASS } : {}) };
+  const headers = { ...(env.QG_BYPASS ? { 'x-vercel-protection-bypass': env.QG_BYPASS } : {}), ...(env.QG_CLE_AGENT ? { 'x-qg-agent-cle': env.QG_CLE_AGENT } : {}) };
   return { url: `${base}/api/agents/regles`, init: { method: 'GET', headers, redirect: 'manual' } };
 }
 

@@ -1,12 +1,14 @@
 import { connection } from 'next/server';
 import { getKV } from '@/server/kv';
 import { lireEtat } from '@/server/qg';
-import { reponseErreur } from '@/server/auth';
+import { reponseErreur, pageSeulement } from '@/server/auth';
 import { sceneCrise } from '@/server/crise/vue';
 
 // La page lit ici l'état des agents, le journal et la réunion de crise en cours (la salle de réunion la suit).
 // Protégée comme toute la page (Vercel Authentication) ; jamais lue depuis /demo.
-export async function GET() {
+export async function GET(req: Request) {
+  const refus = pageSeulement(req);
+  if (refus) return refus;
   await connection(); // toujours lu au moment de la requête, jamais figé à la compilation
   try {
     const { kv, source } = getKV();

@@ -1,6 +1,6 @@
 import { getKV } from '@/server/kv';
-import { deposerMission } from '@/server/qg';
-import { lireJson, reponseErreur } from '@/server/auth';
+import { deposerMission, placeDeMission, Refus } from '@/server/qg';
+import { lireJson, reponseErreur, pageSeulement } from '@/server/auth';
 import { immediatDepuisPage } from '@/server/missions/immediat';
 import { depsImmediat } from '@/server/missions/reel';
 import { agentDe, lireActionsImmediates } from '@/sim/actions-immediates';
@@ -11,8 +11,11 @@ import { agentDe, lireActionsImmediates } from '@/sim/actions-immediates';
 export const maxDuration = 300;
 
 export async function POST(req: Request) {
+  const refus = pageSeulement(req);
+  if (refus) return refus;
   try {
     const { kv, source } = getKV();
+    if (!(await placeDeMission(kv))) throw new Refus('trop de missions d\'un coup : réessaie dans une minute', 429);
     const corps = await lireJson(req);
     if (typeof corps.texte === 'string') {
       const actions = lireActionsImmediates(corps.texte, Date.now());

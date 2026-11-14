@@ -60,6 +60,8 @@ type Routine = {
   motifs?: string[]; accord?: boolean; conditionnel?: boolean; prevu?: boolean;
   /** Mise en pause par le patron : les passages à partir de cette date sont « en pause » (ni faits, ni ratés). */
   pause?: number;
+  /** La reprise : à partir de cette date, la routine repasse normalement (la pause n'aura duré qu'entre les deux). */
+  reprise?: number;
   /** Mise en service de la routine : un passage prévu avant n'a pas d'état (jamais « raté »). */
   actif?: number;
 };
@@ -87,6 +89,10 @@ export const ACTIVATION_MATIN = Date.UTC(2026, 10, 12, 11, 30); // mis en servic
 export { ACTIVATION_MISSIONS };
 /** L · rédaction mise en pause le 10 novembre 2026 (« on ne poste pas pour l'instant »). */
 export const PAUSE_L_REDACTION = Date.UTC(2026, 10, 10, 11, 49);
+/** … et reprise le 14 novembre 2026 au soir (« je veux faire un post sur LinkedIn maintenant »). */
+export const REPRISE_L_REDACTION = Date.UTC(2026, 10, 14, 22, 30);
+/** Une routine est-elle en pause à l'instant `t` ? (entre sa pause et sa reprise, s'il y en a une) */
+export const routineEnPause = (r: { pause?: number; reprise?: number }, t: number) => r.pause !== undefined && t >= r.pause && (r.reprise === undefined || t < r.reprise);
 const TOUS = [0, 1, 2, 3, 4, 5, 6];
 
 /**
@@ -101,7 +107,7 @@ const TOUS = [0, 1, 2, 3, 4, 5, 6];
  */
 export const ROUTINES: Routine[] = [
   { id: 'l-sujets', agent: 'L', titre: 'Propose 3 sujets de la semaine', jours: [0], heures: ['07:00'], motifs: ['propose 3 sujets'], actif: ACTIVATION_L_LIGHT },
-  { id: 'l-redaction', agent: 'L', titre: 'Rédige un brouillon de post', jours: [1, 3], heures: ['06:00'], motifs: ['redige'], accord: true, actif: ACTIVATION_L_LIGHT, pause: PAUSE_L_REDACTION },
+  { id: 'l-redaction', agent: 'L', titre: 'Rédige un brouillon de post', jours: [1, 3], heures: ['06:00'], motifs: ['redige'], accord: true, actif: ACTIVATION_L_LIGHT, pause: PAUSE_L_REDACTION, reprise: REPRISE_L_REDACTION },
   { id: 'light-releve', agent: 'light', titre: 'Relevé des versions', jours: TOUS, heures: ['08:00'], motifs: ['releve du matin', 'envoie le releve', 'termine le rapport'], actif: ACTIVATION_L_LIGHT },
   { id: 'clara-menage', agent: 'clara', titre: 'Propose de nouveaux expéditeurs à nettoyer', jours: TOUS, heures: ['09:00'], motifs: ['statistiques', 'compte les mails', 'prepare des questions', 'questions posees'], actif: ACTIVATION_CLARA },
   { id: 'light-relance', agent: 'light', titre: 'Relance si le relevé n’est pas vu', jours: TOUS, heures: ['14:00', '19:00'], conditionnel: true, actif: ACTIVATION_L_LIGHT },
@@ -255,7 +261,7 @@ export function prochainCreneau(agent: string, lundi: number, now: number, pause
     if (r.agent !== agent || r.conditionnel || r.prevu) continue;
     for (const semaine of [0, 1]) for (const jour of r.jours) for (const heure of r.heures) {
       const quand = aHeure(lundi + (semaine * 7 + jour) * JOUR, heure);
-      if (quand <= now || (r.actif !== undefined && quand < r.actif) || (r.pause !== undefined && quand >= r.pause)) continue;
+      if (quand <= now || (r.actif !== undefined && quand < r.actif) || routineEnPause(r, quand)) continue;
       if (pauses && enPauseA(pauses, agent, quand)) continue;
       if (!mieux || quand < mieux.quand) mieux = { quand, titre: r.titre };
     }
@@ -286,7 +292,7 @@ function creneaux(routines: Routine[], lundi: number, now: number, journal: Entr
       ...(r.accord ? { accord: true } : {}), ...(r.conditionnel ? { conditionnel: true } : {}), ...(r.prevu ? { prevu: true } : {}),
     };
     if (r.prevu) { /* gris, sans état */ } else if (r.actif !== undefined && quand < r.actif) c.etat = 'inactif';
-    else if (r.pause !== undefined && quand >= r.pause) c.etat = 'pause';
+    else if (routineEnPause(r, quand)) c.etat = 'pause';
     else c.etat = r.id === 'qg-missions' ? etatPassageMissions(quand, now, extra.missions ?? SANS_MISSIONS)
       : r.conditionnel ? etatRelance(quand, now, messages[jourDe(quand)]) : etatPassage(c, r.motifs ?? [], now, journal);
     // mis en pause par le patron : « en pause (par toi) », jamais raté (un passage fait quand même reste fait)
@@ -424,7 +430,7 @@ export async function vuesQG(kv: KV, now = Date.now()): Promise<VuesQG> {
   const tous = [...creneaux(ROUTINES, lundi, now, journal, messages, rienARediger, extra), ...creneaux(PREVUS, lundi, now, journal, messages, rienARediger)]
     .sort((a, b) => a.quand - b.quand || a.nom.localeCompare(b.nom));
   // le bandeau ne signale que ce qui demande encore une action : pas une routine mise en pause depuis
-  const enPause = new Set(ROUTINES.filter(r => r.pause !== undefined && r.pause <= now).map(r => r.id));
+  const enPause = new Set(ROUTINES.filter(r => routineEnPause(r, now)).map(r => r.id));
   const rates = tous.filter(c => c.jour === aujourdhui && c.etat === 'rate' && !c.conditionnel && !enPause.has(c.routine));
   const alerte = rates.length
     ? { texte: 'Un passage prévu n\'a pas eu lieu (routines bloquées ?)', passages: rates.map(c => `${c.nom} · ${c.heure}`) }

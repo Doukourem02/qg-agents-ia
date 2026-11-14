@@ -1,4 +1,4 @@
-import { ROUTINES, prochainCreneau, type Creneau, type VuesQG } from './vues';
+import { ROUTINES, prochainCreneau, routineEnPause, type Creneau, type VuesQG } from './vues';
 
 // Les faits déjà rédigés pour Kuroro : des phrases prêtes à dire, construites ici à partir des vraies vues du QG,
 // pour que le modèle (petit, local) n'ait rien à calculer : ce que chaque agent a fait aujourd'hui et à quelle heure,
@@ -64,7 +64,7 @@ const titre = (t: string) => t.replace(/\s*\(Telegram\)/, '');
 /** Où arrive le travail de l'agent, toute la semaine : une phrase par routine, plus son rythme continu. */
 export function ouArrive(agent: string, now: number): string[] {
   const phrases = ROUTINES.filter(r => r.agent === agent).map(r => {
-    const etat = r.pause !== undefined && r.pause <= now ? ' (en pause pour l’instant)' : r.actif !== undefined && r.actif > now ? ' (pas encore en service)' : '';
+    const etat = routineEnPause(r, now) ? ' (en pause pour l’instant)' : r.actif !== undefined && r.actif > now ? ' (pas encore en service)' : '';
     return `${titre(r.titre)} : ${lesJours(r.jours)} ${lesHeures(r.heures)}, ${OU[r.id] ?? 'dans la page'}${etat}.`;
   });
   return CONTINU[agent] ? [...phrases, CONTINU[agent]] : phrases;

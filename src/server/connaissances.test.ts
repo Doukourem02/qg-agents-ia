@@ -22,7 +22,7 @@ describe('connaissances : le fichier du dépôt', () => {
     expect(t).toContain('agissent tout de suite');
     expect(t).toContain('au passage « QG · missions » (chaque heure, 8 h-20 h)');
     expect(t).not.toContain('Seul Isaac lit vraiment');
-    expect(t).toContain('On ne poste pas sur LinkedIn');
+    expect(t).toContain('L rédige de nouveau ses brouillons');
     expect(CONNAISSANCES_DEPOT.personnages.find(p => p.id === 'light')!.clin).toContain('pour L');
   });
   it('Telegram : accords, alertes, compte rendu du matin, réunions de crise ; Kuroro y parle, et connaît les commandes', () => {

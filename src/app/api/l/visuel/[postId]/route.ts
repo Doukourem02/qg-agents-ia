@@ -1,12 +1,14 @@
 import { connection } from 'next/server';
 import { getKV } from '@/server/kv';
-import { reponseErreur } from '@/server/auth';
+import { reponseErreur, pageSeulement } from '@/server/auth';
 import { Refus } from '@/server/qg';
 import { lirePost } from '@/server/l/posts';
 import { rendreVisuel } from '@/server/l/visuels';
 
 // Le visuel d'un post, rendu en PNG pour la page.
-export async function GET(_req: Request, { params }: { params: Promise<{ postId: string }> }) {
+export async function GET(req: Request, { params }: { params: Promise<{ postId: string }> }) {
+  const refus = pageSeulement(req);
+  if (refus) return refus;
   await connection();
   try {
     const { postId } = await params;

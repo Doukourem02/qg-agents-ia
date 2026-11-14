@@ -1,3 +1,4 @@
+import { pageSeulement } from '@/server/auth';
 import { connection } from 'next/server';
 import { getKV } from '@/server/kv';
 import { traiterRetour, URL_CONNEXION } from '@/server/spotify/connexion';
@@ -9,6 +10,8 @@ const page = (corps: string, status: number) =>
 
 // Spotify me renvoie ici avec un code (ou une erreur) ; les jetons n'apparaissent jamais dans la page.
 export async function GET(req: Request) {
+  const refus = pageSeulement(req);
+  if (refus) return refus;
   await connection();
   const clientId = process.env.SPOTIFY_CLIENT_ID, secret = process.env.SPOTIFY_CLIENT_SECRET;
   if (!clientId || !secret) return page('La connexion n\'a pas abouti : Spotify n\'est pas configuré côté QG.', 503);
