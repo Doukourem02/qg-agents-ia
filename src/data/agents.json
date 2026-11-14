@@ -1,0 +1,409 @@
+{
+  "poles": [
+    {
+      "id": "direction",
+      "nom": "Direction",
+      "couleur": "#e0a42a",
+      "chef": "kuroro"
+    },
+    {
+      "id": "code",
+      "nom": "Pôle Code",
+      "couleur": "#4f86e8",
+      "chef": "stalker"
+    },
+    {
+      "id": "communication",
+      "nom": "Communication",
+      "couleur": "#e0753f",
+      "chef": "obito"
+    },
+    {
+      "id": "mac",
+      "nom": "Mac & Outils",
+      "couleur": "#3fae6a",
+      "chef": "isaac"
+    }
+  ],
+  "agents": [
+    {
+      "id": "kuroro",
+      "nom": "Kuroro Lucifer",
+      "role": "CEO, le chef d'orchestre",
+      "pole": "direction",
+      "plusTard": false,
+      "outils": [
+        "C"
+      ],
+      "tache": "répartit les missions du jour",
+      "motsCles": [],
+      "competences": [
+        "répartir les missions",
+        "suivre l'avancement",
+        "prévenir en cas de pouls manquant"
+      ]
+    },
+    {
+      "id": "stalker",
+      "nom": "Stalker",
+      "role": "CTO",
+      "pole": "direction",
+      "plusTard": false,
+      "outils": [
+        "Cu",
+        "GH"
+      ],
+      "tache": "relit l'architecture",
+      "motsCles": [
+        "architecture",
+        "technique"
+      ],
+      "competences": [
+        "architecture",
+        "choix techniques",
+        "encadrer le Pôle Code"
+      ]
+    },
+    {
+      "id": "obito",
+      "nom": "Obito",
+      "role": "CMO, chef direct de L",
+      "pole": "direction",
+      "plusTard": false,
+      "outils": [
+        "in"
+      ],
+      "tache": "valide le calendrier de L",
+      "motsCles": [
+        "stratégie",
+        "marketing"
+      ],
+      "competences": [
+        "stratégie de contenu",
+        "calendrier éditorial",
+        "valider le travail de L"
+      ]
+    },
+    {
+      "id": "feu",
+      "nom": "Feu",
+      "role": "Copilote de trading",
+      "pole": "direction",
+      "plusTard": false,
+      "outils": [
+        "Bi"
+      ],
+      "tache": "lit les bougies de BTC et ETH",
+      "motsCles": [
+        "trading",
+        "trader",
+        "binance",
+        "crypto*",
+        "btc",
+        "eth",
+        "bitcoin",
+        "ethereum",
+        "feu"
+      ],
+      "competences": [
+        "lire le marché en 4h, 1h et 15m",
+        "appliquer mes règles de trading",
+        "plans d'ordres chiffrés, jamais un ordre passé"
+      ]
+    },
+    {
+      "id": "L",
+      "nom": "L",
+      "role": "Community manager et stratège de contenu LinkedIn",
+      "pole": "communication",
+      "plusTard": false,
+      "outils": [
+        "in",
+        "C"
+      ],
+      "tache": "rédige le post de mercredi",
+      "motsCles": [
+        "post",
+        "linkedin",
+        "publi*",
+        "contenu",
+        "sujet"
+      ],
+      "competences": [
+        "ligne éditoriale",
+        "rédaction dans mon style",
+        "visuels Canva",
+        "planning des posts"
+      ]
+    },
+    {
+      "id": "ye",
+      "nom": "Ye",
+      "role": "Curatrice",
+      "pole": "communication",
+      "plusTard": false,
+      "outils": [
+        "Sa"
+      ],
+      "tache": "met à jour une fiche du portfolio",
+      "motsCles": [
+        "portfolio",
+        "sanity",
+        "fiche"
+      ],
+      "competences": [
+        "fiches projets du portfolio",
+        "compétences maîtrisées seulement",
+        "Sanity"
+      ]
+    },
+    {
+      "id": "tom",
+      "nom": "Tom",
+      "role": "Rédacteur (plus tard)",
+      "pole": "communication",
+      "plusTard": true,
+      "outils": [
+        "Cu"
+      ],
+      "tache": "prépare un script vidéo",
+      "motsCles": [
+        "vidéo",
+        "video",
+        "script",
+        "carrousel"
+      ],
+      "competences": [
+        "scripts vidéo",
+        "carrousels",
+        "déclinaisons d'un post"
+      ]
+    },
+    {
+      "id": "light",
+      "nom": "Light",
+      "role": "Veilleur",
+      "pole": "code",
+      "plusTard": false,
+      "outils": [
+        "GH"
+      ],
+      "tache": "surveille les nouvelles versions",
+      "motsCles": [
+        "veille",
+        "version",
+        "nouveauté"
+      ],
+      "competences": [
+        "veille des versions",
+        "changelogs",
+        "montées de version à prévoir"
+      ]
+    },
+    {
+      "id": "mafe",
+      "nom": "Mafe",
+      "role": "Point du matin",
+      "pole": "code",
+      "plusTard": false,
+      "outils": [
+        "GH",
+        "Tg",
+        "No",
+        "Ob"
+      ],
+      "tache": "prépare le point du matin",
+      "motsCles": [
+        "point",
+        "résumé",
+        "resume",
+        "bilan"
+      ],
+      "competences": [
+        "point du matin",
+        "feuilles de route",
+        "tâches en attente"
+      ]
+    },
+    {
+      "id": "luffy",
+      "nom": "Luffy",
+      "role": "Vigie",
+      "pole": "code",
+      "plusTard": false,
+      "outils": [
+        "Tg"
+      ],
+      "tache": "vérifie que les sites répondent",
+      "motsCles": [
+        "site",
+        "déploi",
+        "deploi",
+        "vercel",
+        "panne",
+        "render"
+      ],
+      "competences": [
+        "surveillance des sites",
+        "déploiements",
+        "alertes de panne"
+      ]
+    },
+    {
+      "id": "zoro",
+      "nom": "Zoro",
+      "role": "Gardien",
+      "pole": "code",
+      "plusTard": false,
+      "outils": [
+        "GH"
+      ],
+      "tache": "passe les alertes de sécurité",
+      "motsCles": [
+        "sécu*",
+        "secu*",
+        "faille",
+        "jeton"
+      ],
+      "competences": [
+        "alertes de sécurité",
+        "jetons qui expirent",
+        "copies uniques"
+      ]
+    },
+    {
+      "id": "lea",
+      "nom": "Léa",
+      "role": "Relecteur",
+      "pole": "code",
+      "plusTard": false,
+      "outils": [
+        "GH"
+      ],
+      "tache": "relit le dernier commit",
+      "motsCles": [
+        "commit",
+        "reli*",
+        "relecture"
+      ],
+      "competences": [
+        "relecture de commits",
+        "bugs et failles",
+        "cohérence du code"
+      ]
+    },
+    {
+      "id": "paul",
+      "nom": "Paul",
+      "role": "Archiviste",
+      "pole": "code",
+      "plusTard": false,
+      "outils": [
+        "GH"
+      ],
+      "tache": "met à jour un README",
+      "motsCles": [
+        "readme",
+        "doc*",
+        "archive"
+      ],
+      "competences": [
+        "README",
+        "CLAUDE.md",
+        "« Où on s'est arrêté »"
+      ]
+    },
+    {
+      "id": "sam",
+      "nom": "Sam",
+      "role": "Testeur (plus tard)",
+      "pole": "code",
+      "plusTard": true,
+      "outils": [
+        "Ex"
+      ],
+      "tache": "lance les tests",
+      "motsCles": [
+        "test"
+      ],
+      "competences": [
+        "tests",
+        "scénarios de vérification"
+      ]
+    },
+    {
+      "id": "isaac",
+      "nom": "Isaac",
+      "role": "Concierge Mac",
+      "pole": "mac",
+      "plusTard": false,
+      "outils": [
+        "Mac",
+        "Tg"
+      ],
+      "tache": "mesure la place libre sur le disque",
+      "motsCles": [
+        "cache",
+        "caches",
+        "mac",
+        "disque",
+        "place",
+        "espace",
+        "nettoie",
+        "nettoyer",
+        "vide",
+        "vider",
+        "libere",
+        "ménage"
+      ],
+      "competences": [
+        "place sur le disque",
+        "caches et node_modules",
+        "services en arrière-plan"
+      ]
+    },
+    {
+      "id": "clara",
+      "nom": "Clara",
+      "role": "Secrétaire (mails)",
+      "pole": "mac",
+      "plusTard": false,
+      "outils": [
+        "C",
+        "Gm"
+      ],
+      "tache": "trie les mails inutiles",
+      "motsCles": [
+        "mail",
+        "courriel",
+        "newsletter"
+      ],
+      "competences": [
+        "tri des mails",
+        "désabonnements",
+        "mails importants"
+      ]
+    },
+    {
+      "id": "malenia",
+      "nom": "Malenia",
+      "role": "Bibliothécaire Notion (plus tard)",
+      "pole": "mac",
+      "plusTard": true,
+      "outils": [
+        "C",
+        "No"
+      ],
+      "tache": "range les notes",
+      "motsCles": [
+        "notion",
+        "note"
+      ],
+      "competences": [
+        "notes Notion",
+        "rangement",
+        "recherche"
+      ]
+    }
+  ]
+}
