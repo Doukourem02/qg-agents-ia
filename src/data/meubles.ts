@@ -11,6 +11,9 @@ const cyl = (cx: number, cy: number, z: number, diam: number, h: number, c: stri
   b(cx - diam / 2, cy - diam / 2, z, diam, diam, h, c, { forme: 'cylindre', ...o });
 const DIR: Record<Cote, Pt> = { N: [0, -1], S: [0, 1], E: [1, 0], W: [-1, 0] };
 
+/** Vers où regarde chaque chaise posée (son centre, son côté) : un personnage assis là regarde du même côté (Agents.tsx). */
+export const CHAISES: { x: number; y: number; vers: Cote }[] = [];
+
 /** Un tirage fixe d'après une position : deux meubles identiques ne le sont jamais tout à fait. */
 function hasard(x: number, y: number) {
   let s = (Math.floor(x * 97) * 73856093) ^ (Math.floor(y * 89) * 19349663);
@@ -38,6 +41,7 @@ export function tableRonde(cx: number, cy: number, o: { diam?: number; h?: numbe
 
 /** Une chaise : quatre pieds fins, une assise, un dossier à l'opposé de `vers`. */
 export function chaise(cx: number, cy: number, vers: Cote, c = '#3a3f55', assise = c): Box[] {
+  CHAISES.push({ x: cx, y: cy, vers });
   const t = 0.38, e = 0.04, z = 0.22, x = cx - t / 2, y = cy - t / 2;
   const [dx, dy] = DIR[vers];
   const out = [
@@ -52,6 +56,7 @@ export function chaise(cx: number, cy: number, vers: Cote, c = '#3a3f55', assise
 
 /** Une chaise de bureau : la base en étoile, la colonne, l'assise rembourrée, le dossier. */
 export function chaiseDeBureau(cx: number, cy: number, vers: Cote, c = '#2a2a36', tissu = '#3b3f52'): Box[] {
+  CHAISES.push({ x: cx, y: cy, vers });
   const t = 0.4, x = cx - t / 2, y = cy - t / 2;
   const [dx, dy] = DIR[vers];
   const out = [

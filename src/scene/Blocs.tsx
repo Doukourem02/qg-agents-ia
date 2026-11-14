@@ -15,17 +15,43 @@ export type Bloc = {
   forme?: 'cylindre';
 };
 
+// Le relief (v2) : chaque bloc paraît taillé et posé, sans vraie lumière (tout reste peint, comme dans mes plans).
+//   · au pied de chaque face, une ombre de contact qui s'efface en montant (le bloc « touche » ce qui le porte) ;
+//   · sur le dessus, un liseré clair le long des arêtes ; en haut des côtés, un filet clair ; aux arêtes verticales,
+//     un filet sombre : les volumes se détachent les uns des autres.
+// Les liserés font toujours au moins un pixel d'écran (fwidth) : pas de scintillement quand on dézoome.
 const SOMMET = /* glsl */ `
   attribute vec3 cHaut; attribute vec3 cGauche; attribute vec3 cDroite;
-  varying vec3 vC;
+  varying vec3 vC; varying vec3 vP; varying vec3 vT; varying float vDessus; varying float vAxeX;
   void main() {
-    if (abs(normal.y) > 0.5) vC = cHaut;
+    vDessus = step(0.5, abs(normal.y));
+    vAxeX = step(0.5, abs(normal.x));
+    if (vDessus > 0.5) vC = cHaut;
     else vC = mix(cGauche, cDroite, abs(normal.x) / (abs(normal.x) + abs(normal.z) + 1e-5));
+    vP = position;
+    vT = vec3(length(instanceMatrix[0].xyz), length(instanceMatrix[1].xyz), length(instanceMatrix[2].xyz));
     gl_Position = projectionMatrix * modelViewMatrix * instanceMatrix * vec4(position, 1.0);
   }`;
 // les teintes sont déjà en sRGB (celles de l'écran) : rien à convertir, comme le résultat d'un MeshBasicMaterial
-const PIXEL = /* glsl */ `varying vec3 vC; void main() { gl_FragColor = vec4(vC, 1.0); }`;
-const MATIERE = new THREE.ShaderMaterial({ vertexShader: SOMMET, fragmentShader: PIXEL });
+const pixel = (aretes: boolean) => /* glsl */ `
+  varying vec3 vC; varying vec3 vP; varying vec3 vT; varying float vDessus; varying float vAxeX;
+  float filet(float d, float large) { float w = max(large, fwidth(d) * 1.2); return 1.0 - smoothstep(w * 0.6, w, d); }
+  void main() {
+    vec3 c = vC;
+    float gros = smoothstep(0.1, 0.22, min(vT.x, vT.z)); // les tout petits cubes (feuillages, herbe) gardent leur aplat
+    if (vDessus > 0.5) {
+      ${aretes ? 'float d = min((0.5 - abs(vP.x)) * vT.x, (0.5 - abs(vP.z)) * vT.z); c += 0.055 * filet(d, 0.03) * gros;' : ''}
+    } else {
+      float h = (vP.y + 0.5) * vT.y;                     // la hauteur au-dessus du pied du bloc
+      c *= 1.0 - 0.2 * exp(-h * 9.0) * smoothstep(0.05, 0.3, vT.y);
+      float haut = (0.5 - vP.y) * vT.y;
+      c += 0.04 * filet(haut, 0.025) * gros;
+      ${aretes ? 'float bord = vAxeX > 0.5 ? (0.5 - abs(vP.z)) * vT.z : (0.5 - abs(vP.x)) * vT.x; c *= 1.0 - 0.1 * filet(bord, 0.02) * gros;' : ''}
+    }
+    gl_FragColor = vec4(c, 1.0);
+  }`;
+const MATIERE = new THREE.ShaderMaterial({ vertexShader: SOMMET, fragmentShader: pixel(true) });
+const MATIERE_RONDE = new THREE.ShaderMaterial({ vertexShader: SOMMET, fragmentShader: pixel(false) });
 
 const PAVE = new THREE.BoxGeometry(1, 1, 1);
 const CYLINDRE = new THREE.CylinderGeometry(0.5, 0.5, 1, 10);
@@ -39,7 +65,7 @@ function teinte(hex: string, k = 1): [number, number, number] {
   return [o.r, o.g, o.b];
 }
 
-function Lot({ blocs, geo }: { blocs: Bloc[]; geo: THREE.BufferGeometry }) {
+function Lot({ blocs, geo, matiere = MATIERE }: { blocs: Bloc[]; geo: THREE.BufferGeometry; matiere?: THREE.ShaderMaterial }) {
   const ref = useRef<THREE.InstancedMesh>(null);
   const geometrie = useMemo(() => {
     const g = geo.clone();
@@ -70,7 +96,7 @@ function Lot({ blocs, geo }: { blocs: Bloc[]; geo: THREE.BufferGeometry }) {
   }, [blocs]);
   useLayoutEffect(() => () => geometrie.dispose(), [geometrie]);
   if (!blocs.length) return null;
-  return <instancedMesh ref={ref} args={[geometrie, MATIERE, blocs.length]} frustumCulled={false} />;
+  return <instancedMesh ref={ref} args={[geometrie, matiere, blocs.length]} frustumCulled={false} />;
 }
 
 /** Tous les blocs donnés, en deux objets (les pavés, les cylindres). */
@@ -79,7 +105,7 @@ export function Blocs({ blocs }: { blocs: Bloc[] }) {
   return (
     <>
       <Lot blocs={paves} geo={PAVE} />
-      <Lot blocs={cylindres} geo={CYLINDRE} />
+      <Lot blocs={cylindres} geo={CYLINDRE} matiere={MATIERE_RONDE} />
     </>
   );
 }

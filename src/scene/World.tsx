@@ -3,6 +3,7 @@ import { useLayoutEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { Blocs } from './Blocs';
+import { OmbresContact } from './OmbresContact';
 import { motifTexture } from './motifs';
 import { FENETRE, FENETRES_E, FENETRES_N, FENETRES_S, FENETRES_W, occupation, occupee, posteCle } from './nuit';
 import { EPAISSEUR_MUR, FURNITURE, GRID, ILE, ILOTS, MUR_FOND, partiesDe, PORTE, ROOMS, type Box } from '@/data/layout';
@@ -291,6 +292,7 @@ export function World() {
         <meshBasicMaterial map={floor} />
       </mesh>
       <Blocs blocs={blocs} />
+      <OmbresContact blocs={blocs} />
       <Mur cote="N" mur={murN} dessus={<Blocs blocs={surN} />} />
       <Mur cote="W" mur={murW} dessus={<><Blocs blocs={surW} />{affiches.map((b, i) => <Motif key={i} b={b} />)}</>} />
       <Mur cote="S" mur={murS} auDessus={surPorte} dessus={<Blocs blocs={surS} />} />
